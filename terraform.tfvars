@@ -1,0 +1,5 @@
+project_id = "dev-env-789"
+region     = "us-central1"
+gke_cluster_name = "gke-llm"
+ip_range_pods = "pods"
+ip_range_services = "services"
