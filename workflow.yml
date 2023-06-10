@@ -1,35 +1,22 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
-  generateName: git-clone-and-storage
+  generateName: output-artifact-gcs
 spec:
-  entrypoint: git-clone-and-storage
+  entrypoint: output-artifact-gcs
   templates:
-    - name: git-clone-and-storage
-      steps:
-        - - name: clone-repo
-            template: clone-repo
-        - - name: store-in-gcs
-            template: store-in-gcs
-
-    - name: clone-repo
-      container:
-        image: alpine/git
-        command: [git]
-        args: ["lfs", "clone", "https://huggingface.co/tiiuae/falcon-40b-instruct", "--depth", "1"]
-
-    - name: store-in-gcs
+    - name: output-artifact-gcs  
       container:
         image: google/cloud-sdk:latest
-        command: ["sh", "-c"]
-        args:
-          - |
-            # Authenticate with Google Cloud
-            gcloud auth activate-service-account --key-file='${{ secrets.GCP_SA_KEY }}'
-
-            # Set GCS bucket name and file name
-            GCS_BUCKET=llm_bucket_789
-            FILE_NAME=falcon-40b-instruct.tar.gz
-
-            # Copy the cloned image to GCS
-            gsutil cp -r repository/ gs://${GCS_BUCKET}/${FILE_NAME}
+        command: [sh, -c]
+        args: ["git lfs clone https://huggingface.co/tiiuae/falcon-40b-instruct --depth 1"]
+      outputs:
+        artifacts:
+          - name: files
+            path: /
+            gcs:
+              bucket: llm_bucket_789
+              key: path/in/bucket/falcon-40b-instruct.tgz
+              serviceAccountKeySecret:
+                name: my-gcs-credentials
+                key: serviceAccountKey
