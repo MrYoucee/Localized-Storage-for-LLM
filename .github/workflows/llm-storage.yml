@@ -74,6 +74,7 @@ jobs:
           gcloud container clusters get-credentials '${{ secrets.GKE_CLUSTER_NAME }}' --region '${{ secrets.GKE_REGION }}'
           kubectl create namespace argo
           kubectl apply -n argo -f https://github.com/argoproj/argo-workflows/releases/download/v3.4.8/install.yaml
+          kubectl create secret generic my-gcs-credentials --from-literal=serviceAccountKey='${{ secrets.GCP_SA_KEY }}'
 
       - name: Install Argo CLI
         run: |
