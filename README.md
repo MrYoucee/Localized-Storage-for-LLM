@@ -1,5 +1,5 @@
 # LOCALIZED-STORAGE-FOR-LLM
-Automated set-up for creating K8s cluster, deploying Argo Workflow and storing artifacts of a public LLM in a Google Cloud region
+Automated workflow for creating K8s cluster, deploying Argo Workflow and storing git cloned images of a public LLM in a Google Cloud region
 
 # Prerequisities
       ## compulsory
@@ -21,5 +21,5 @@ Automated set-up for creating K8s cluster, deploying Argo Workflow and storing a
 Clone and checkout this repository to a branch, ensure your parameters are accurate. Immediately the pull-request is merged into main, the workflow is triggered and the process starts as 
 - Infrastructure set-up using terraform (.tf) files
 - Argo install and workflows using the workflow.yml file. The process involves git cloning the image and storing it in GCS.
-- Clean-up by deleting the resources in the cluster and tearign down the cluster with the storage buckets created.
+- Clean-up by deleting the resources in the cluster and tearing down the cluster with the storage bucket created.
 
