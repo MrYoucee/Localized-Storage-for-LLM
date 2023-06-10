@@ -15,7 +15,7 @@ Automated workflow for creating K8s cluster, deploying Argo Workflow and storing
 - Warning! It is highly recommended that you enable Object Versioning on the GCS bucket to allow for state recovery in the case of accidental deletions and human error.
 
 # Terraform (.tf) files
-- Update the values of your terraform.tfvars as appropriate.
+- Update the values of your terraform.tfvars as appropriate from the created compulsory prerequisities.
 
 # Running the process
 Clone and checkout this repository to a branch, ensure your parameters are accurate. Immediately the pull-request is merged into main, the workflow is triggered and the process starts as 
