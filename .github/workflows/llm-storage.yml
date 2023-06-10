@@ -1,0 +1,128 @@
+name: LLM-storage-workflow
+
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  infrastructure:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
+
+      - name: 'Use gcloud CLI'
+        run: 'gcloud info'
+    
+      - name: Initialize Terraform
+        run: terraform init
+        env:
+          GOOGLE_CREDENTIALS: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: Validate Terraform Configuration
+        run: |
+          terraform validate
+
+      - name: Terraform Plan
+        run: |
+          terraform plan
+        env:
+          GOOGLE_CREDENTIALS: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: Terraform Apply
+        run: |
+          terraform apply -auto-approve
+        env:
+          GOOGLE_CREDENTIALS: '${{ secrets.GCP_SA_KEY }}'
+          
+  argo-workflow:
+    needs: infrastructure
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
+
+      - name: 'Use gcloud CLI'
+        run: 'gcloud info'
+        
+      - name: 'Install gke-gcloud-auth-plugin'
+        run: |
+          gcloud components install gke-gcloud-auth-plugin
+          
+      - name: Install Argo Workflows
+        run: |
+          gcloud container clusters get-credentials '${{ secrets.GKE_CLUSTER_NAME }}' --region '${{ secrets.GKE_REGION }}'
+          kubectl create namespace argo
+          kubectl apply -n argo -f https://github.com/argoproj/argo-workflows/releases/download/v3.4.8/install.yaml
+
+      - name: Install Argo CLI
+        run: |
+          curl -sLO https://github.com/argoproj/argo/releases/latest/download/argo-linux-amd64.gz
+          gunzip argo-linux-amd64.gz
+          chmod +x argo-linux-amd64
+          sudo mv argo-linux-amd64 /usr/local/bin/argo
+
+      - name: Run Argo Workflow
+        run: |
+          argo submit -n argo --watch workflow.yml
+
+  clean-up:
+    needs: [infrastructure, argo-workflow]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
+
+      - name: 'Use gcloud CLI'
+        run: 'gcloud info'
+      
+      - name: 'Install gke-gcloud-auth-plugin'
+        run: |
+          gcloud components install gke-gcloud-auth-plugin
+    
+      - name: Delete all resources in the cluster
+        run: |
+          gcloud container clusters get-credentials '${{ secrets.GKE_CLUSTER_NAME }}' --region '${{ secrets.GKE_REGION }}'
+          kubectl delete all --all
+        
+      - name: Initialize Terraform
+        run: |
+          terraform init
+        env:
+          GOOGLE_CREDENTIALS: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: Destroy Terraform
+        run: |
+          terraform destroy -auto-approve
+        env:
+          GOOGLE_CREDENTIALS: '${{ secrets.GCP_SA_KEY }}'
+
