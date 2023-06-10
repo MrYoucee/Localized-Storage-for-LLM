@@ -1,5 +1,5 @@
-project_id = "dev-env-789"
-region     = "us-central1"
-gke_cluster_name = "gke-llm"
+project_id = ""
+region     = ""
+gke_cluster_name = ""
 ip_range_pods = "pods"
 ip_range_services = "services"
