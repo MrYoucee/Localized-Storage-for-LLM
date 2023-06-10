@@ -1,5 +1,7 @@
 # LOCALIZED-STORAGE-FOR-LLM
-Automated workflow for creating K8s cluster, deploying Argo Workflow and storing git cloned images of a public LLM in a Google Cloud region
+Automated workflow for creating K8s cluster, deploying Argo Workflow and storing git cloned images of a public LLM in a Google Cloud region.
+
+- This automation was achieved by using Terraform for setting up the necessary Infrastructure on GCP and using Github actions to build the workflow actions.
 
 # Prerequisities
       ## compulsory
