@@ -10,4 +10,15 @@ Automated set-up for creating K8s cluster, deploying Argo Workflow and storing a
       Warning! It is highly recommended that you enable Object Versioning on the GCS bucket to allow for state recovery in the case of accidental deletions and human error.
 - Endeavour to create secondary IPv4 ranges in the default subnetwork of the default VPC Network. Give it the names as 'pods' and 'services'. 
 
-      ## optional
+      ## optional 
+- Create your backend storage bucket in the project for the storage of your terraform state files. Update this name in the bucket of 'providers.tf' file. If you wish not to store this, delete the terraform block on 'providers.tf' file.
+      Warning! It is highly recommended that you enable Object Versioning on the GCS bucket to allow for state recovery in the case of accidental deletions and human error.
+
+# Terraform (.tf) files
+- Update the values of your terraform.tfvars as appropriate.
+
+# Running the process
+- Clone and checkout this repository to a branch, ensure your parameters are accurate. Immediately the pull-request is merged into main, the workflow is triggered and the process starts as 
+      . Infrastructure set-up using terraform (.tf) files\
+      . Argo install and workflows using the workflow.yml file. The process involves git cloning the image and storing it in GCS.
+      . Clean-up by deleting the resources in the cluster and tearign down the cluster with the storage buckets created.
