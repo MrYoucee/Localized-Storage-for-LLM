@@ -12,7 +12,6 @@ module "gke" {
   project_id                 = var.project_id
   name                       = var.gke_cluster_name
   region                     = var.region
-  zones                      = ["us-central1-a", "us-central1-b", "us-central1-f"]
   network                    = "default"
   subnetwork                 = "default"
   ip_range_pods              = var.ip_range_pods
@@ -23,7 +22,6 @@ module "gke" {
     {
       name                      = "default-node-pool"
       machine_type              = "e2-medium"  #a2-ultragpu-1g (GPU for compute intensive ML task)
-      node_locations            = "us-central1-b,us-central1-c"
       min_count                 = 1
       max_count                 = 3
       disk_size_gb              = 100
