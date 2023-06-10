@@ -12,7 +12,7 @@ Automated workflow for creating K8s cluster, deploying Argo Workflow and storing
 
       ## optional 
 - Create your backend storage bucket in the project for the storage of your terraform state files. Update this name in the bucket of 'providers.tf' file. If you wish not to store this, delete the terraform block on 'providers.tf' file.
-      Warning! It is highly recommended that you enable Object Versioning on the GCS bucket to allow for state recovery in the case of accidental deletions and human error.
+- Warning! It is highly recommended that you enable Object Versioning on the GCS bucket to allow for state recovery in the case of accidental deletions and human error.
 
 # Terraform (.tf) files
 - Update the values of your terraform.tfvars as appropriate.
