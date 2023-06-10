@@ -9,4 +9,5 @@ Automated set-up for creating K8s cluster, deploying Argo Workflow and storing a
 - Create your backend storage bucket in the project for the storage of your terraform state files. Update this name in the bucket of 'providers.tf' file
       Warning! It is highly recommended that you enable Object Versioning on the GCS bucket to allow for state recovery in the case of accidental deletions and human error.
 - Endeavour to create secondary IPv4 ranges in the default subnetwork of the default VPC Network. Give it the names as 'pods' and 'services'. 
+- 
       ## optional
